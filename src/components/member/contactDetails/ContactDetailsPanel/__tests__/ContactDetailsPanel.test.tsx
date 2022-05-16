@@ -1,9 +1,9 @@
 import { render, act, waitFor, screen } from "@testing-library/react";
 import * as reactRedux from "react-redux";
-import * as MemberApiClient from "services/api/MemberApiClient";
 import "@testing-library/jest-dom";
 import ContactDetailsPanel from "..";
-
+import AppThemeProvider from "context/ThemeModeContext";
+ 
 jest.mock("@aws-amplify/auth", () => ({
   currentSession: jest.fn(),
   currentCredentials: jest.fn(),
@@ -11,53 +11,60 @@ jest.mock("@aws-amplify/auth", () => ({
   essentialCredentials: jest.fn(),
   configure: jest.fn(),
 }));
-
+ 
 jest.mock("react-redux", () => {
   return {
     useSelector: jest.fn(),
   };
 });
-
+ 
 const mockApiClient = jest.fn();
-
+ 
 jest.mock("services/api/MemberApiClient", () => ({
-  MemberApiClient: () => mockApiClient,
+  MemberApiClient: () => ({
+    getContactAddress: () => mockApiClient(),
+  }),
 }));
-
+ 
 describe("<ContactDetailsPanel />", () => {
   const useAppSelectorMock = jest.spyOn(reactRedux, "useSelector");
-
+ 
   // beforeEach(() => {
   //   jest.clearAllMocks();
   // });
-
+ 
   it("displays loading text when data is loading", async () => {
     useAppSelectorMock.mockReturnValue({
       awsDetails: {},
     });
     render(<ContactDetailsPanel />);
-
+ 
     await act(async () => {
       const loader = await waitFor(() => screen.getByText("Contact details are loading..."));
       expect(loader).toBeVisible();
     });
   });
-  it.only("displays header text after data was fetched", async () => {
+  it("displays header text after data was fetched", async () => {
     useAppSelectorMock.mockReturnValue({
       awsDetails: {},
     });
-    const useMemberClientApiMock = jest.spyOn(MemberApiClient, "MemberApiClient");
-
-    useMemberClientApiMock.mockReturnValue({
-      getContactAddress: async () => ({}),
+ 
+    mockApiClient.mockReturnValue({
+      line1: "",
+      line2: "",
+      line3: "",
+      line4: "",
+      line5: "",
+      postcode: "",
+      phoneNumber: "",
+      faxNumber: "",
+      email: "",
+      overseas: "",
     });
-    render(<ContactDetailsPanel />);
-
-    await act(async () => {
-      const loader = await waitFor(() => screen.getByText("Contact details are loading..."));
-      expect(loader).toBeVisible();
+    render(<ContactDetailsPanel />, {
+      wrapper: ({ children }) => <AppThemeProvider>{children}</AppThemeProvider>,
     });
-
+ 
     await act(async () => {
       const pageTitle = await waitFor(() => screen.getByText("Contact details"));
       expect(pageTitle).toBeVisible();
