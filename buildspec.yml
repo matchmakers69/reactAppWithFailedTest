@@ -1,0 +1,29 @@
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    TME_MAJOR_VERION: "0"
+    TME_MINOR_VERION: "0"
+
+phases:
+  install:
+    commands:
+      - npm install -g npm@8.6.0
+      - npm install -g yarn@1.22.18
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - yarn install
+  build:
+    on-failure: ABORT
+    commands:
+      - yarn run build
+artifacts:
+  files:
+    - "**/*"
+  base-directory: build
+  name: tme_react_app/$TME_MAJOR_VERION.$TME_MINOR_VERION.0-SNAPSHOT/tme_react_app-$TME_MAJOR_VERION.$TME_MINOR_VERION.0-$(date +%Y-%m-%d)-$CODEBUILD_BUILD_NUMBER
+cache:
+  paths:
+    - "node_modules/**/*"

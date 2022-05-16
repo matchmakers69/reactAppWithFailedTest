@@ -1,0 +1,19 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+
+
+echo '👷 Unit tests testing your project before pushing'
+
+# yarn run test -- --watchAll=false || (
+#   echo '😤🏀👋😤 Test failed here! 😤🏀👋😤 
+#                 ESLint Check Failed. Make the required changes listed above, add changes and try to push again.'
+#         false; 
+# )
+
+
+# If everything passes... Now we can push
+echo '🤔🤔🤔🤔... Alright.... Code looks good to me... Trying to build now. 🤔🤔🤔🤔'
+
+# If everything passes... Now we can push
+echo '✅✅✅✅ You win this time... I am pushing this now. ✅✅✅✅'
